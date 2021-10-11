@@ -11,4 +11,4 @@ for i in range(len(cogs)):
     cogs[i].setup(bot)
 
 
-bot.run("ODk2Nzc4MDk3OTUxNjU3OTg0.YWMDrw.cfwvbGmI-BTQhndUnckrTDGIc5g")
+bot.run("YOUR_TOKEN")

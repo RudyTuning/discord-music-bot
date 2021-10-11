@@ -1,7 +1,13 @@
+import os
+
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
 
 import music
+
+load_dotenv()
+DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 cogs = [music]
 
@@ -11,4 +17,4 @@ for i in range(len(cogs)):
     cogs[i].setup(bot)
 
 
-bot.run("YOUR_TOKEN")
+bot.run(DISCORD_TOKEN)

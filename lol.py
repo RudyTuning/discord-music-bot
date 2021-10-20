@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 import riotAPI
+import riotAPIVariables
 
 
 class Lol(commands.Cog):
@@ -11,9 +12,25 @@ class Lol(commands.Cog):
     @commands.command()
     async def opgg(self, ctx, *, summonerName):
         print(summonerName)
-        match = riotAPI.getMatch(summonerName)
-        if match:
-            queue = match["gameQueueConfigId"]
+        response: tuple = riotAPI.getMatch(summonerName)
+        status: int = response[0]
+        if status == 0:
+            await ctx.send("Summoner not found")
+        elif status == 1:
+            await ctx.send("Summoner not in game")
+        elif status == 2:
+            await ctx.send("Summoner in game")
+            matchData = response[1]
+            queue: int = matchData[0]
+            players: list = matchData[1]
+            message: str = ""
+            for i in range(len(players)):
+                championName: str = riotAPIVariables.championName[players[i]["championId"]]
+                player: str = "{p[chamionName]}        {p[summonerName]}        {p[tier]} {p[rank]} ({p[winRate]}% WR) \n".format(p=players[i])
+                message += player
+            await ctx.send(message)
+
+            """
             # blueTeam = [player for player in match['participants'] if match['participants'][player]['teamId'] == 100]
             participants = match['participants']
             blueTeam = [participants[i] for i in range(0, 5)]
@@ -33,8 +50,7 @@ class Lol(commands.Cog):
                 + redTeam[3]['summonerName'] + "\n"
                 + redTeam[4]['summonerName'] + "\n"
             )
-        else:
-            await ctx.send("Ce joueur n'est pas dans une partie\n ou le pseudo n'existe pas")
+            """
 
 
 def setup(client):

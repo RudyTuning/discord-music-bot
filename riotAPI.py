@@ -3,13 +3,11 @@ import pprint
 from typing import Optional, TypedDict
 
 import requests
+from discord import player
 from dotenv import load_dotenv
 from requests.models import Response
 
-
-def main():
-    # pprint.pprint(getMatch("GW toucouille"), width=1)
-    getMatch("GW toucouille")
+import riotAPIVariables
 
 
 def getMatch(summonerName):
@@ -35,7 +33,6 @@ def getMatch(summonerName):
                     getPlayerRatio(
                         parsedMatch[1][i]["summonerId"],
                         RIOT_TOKEN))
-            pprint.pprint(parsedMatch)
             return (response_status, parsedMatch)
         response_status = 1
     return (response_status, {})
@@ -56,6 +53,7 @@ def parseMatch(matchData: dict) -> tuple[int, list[dict]]:
     for i in range(len(players)):
         for key in keysToRemove:
             players[i].pop(key, None)
+            players[i]['chamionName'] = riotAPIVariables.championName[players[i]["championId"]]
     parsedMatchData = (queue, players)
     return parsedMatchData
 
@@ -116,62 +114,3 @@ def getMatchEncryptedId(
     else:
         print(r.json())
         return r.json()
-
-
-queues: dict = {
-    0: {
-        "map": "Game custom",
-        "description": None
-    },
-    430: {
-        "map": "Summoner's Rift",
-        "description": "5v5 Blind Pick"
-    },
-    420: {
-        "map": "Summoner's Rift",
-        "description": "5v5 Ranked Solo"
-    },
-    76: {
-        "map": "Summoner's Rift",
-        "description": "Ultra Rapide Fire"
-    },
-    83: {
-        "map": "Summoner's Rift",
-        "description": "Co-op vs AI Ultra Rapide Fire"
-    },
-    400: {
-        "map": "Summoner's Rift",
-        "description": "5v5 Draft Pick"
-    },
-    440: {
-        "map": "Summoner's Rift",
-        "description": "5v5 Ranked Flex"
-    },
-    450: {
-        "map": "Howling Abyss",
-        "description": "5v5 ARAM"
-    },
-    700: {
-        "map": "Summoner's Rift",
-        "description": "Clash"
-    },
-    900: {
-        "map": "Summoner's Rift",
-        "description": "Ultra Rapid Fire"
-    },
-    1020: {
-        "map": "Suommoner's Rift",
-        "description": "One For All"
-    },
-    1300: {
-        "map": "Nexus Blitz",
-        "description": "Nexus Blitz"
-    },
-    1400: {
-        "map": "Summoner's Rift",
-        "description": "Ultimate Spellbook"
-    },
-}
-
-if __name__ == "__main__":
-    main()
